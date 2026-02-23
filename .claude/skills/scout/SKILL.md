@@ -75,9 +75,9 @@ Then launch a subagent to write `/tmp/claude/scout/problem.md` with this structu
 - [Specific projects/tools the user wants checked, or "None"]
 ```
 
-Read `/tmp/claude/scout/problem.md` and present it to the user.
+Read `/tmp/claude/scout/problem.md`. Present a brief summary (2-3 sentences) followed by the full file contents verbatim. The user must see exactly what the subagents will work from.
 
-**GATE:** User confirms or corrects the problem statement. If corrections are needed, update the file and re-present. Do not proceed until the user approves.
+**GATE:** User confirms or corrects the problem statement. If corrections are needed, update the file and re-present (summary + full contents). Do not proceed until the user approves.
 
 ---
 
