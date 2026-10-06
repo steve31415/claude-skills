@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Upload an audio file to the Gemini Files API and transcribe it with Gemini 2.5 Pro.
+"""Upload an audio file to the Gemini Files API and transcribe it with Gemini 3.1 Pro.
 
 Usage:
     transcribe.py <audio-file> [--out <transcript.txt>] [--prompt <prompt.txt>]
@@ -7,7 +7,7 @@ Usage:
 - Reads the API key from ~/.config/gemini/key (a single-line AI Studio key, "AIza...").
 - Uploads via the resumable Files API (required for files over the 20 MB inline limit;
   used unconditionally here so the same path works for any size).
-- Transcribes with gemini-2.5-pro and prints the transcript to stdout.
+- Transcribes with gemini-3.1-pro-preview and prints the transcript to stdout.
 - Writes to --out as well if given. Deletes the uploaded file afterward.
 
 IMPORTANT: run this with the sandbox DISABLED. The sandbox's localhost network proxy
@@ -20,7 +20,7 @@ import time
 import urllib.request
 import urllib.error
 
-MODEL = "gemini-2.5-pro"
+MODEL = "gemini-3.1-pro-preview"
 BASE = "https://generativelanguage.googleapis.com"
 KEY_PATH = os.path.expanduser("~/.config/gemini/key")
 
@@ -153,13 +153,15 @@ def main():
         die(f"Uploaded file never became ACTIVE (state={state}).")
 
     # 4. Transcribe.
-    print("Transcribing with gemini-2.5-pro...", file=sys.stderr)
+    print("Transcribing with gemini-3.1-pro-preview...", file=sys.stderr)
     reqbody = {
         "contents": [{"role": "user", "parts": [
             {"file_data": {"mime_type": mime, "file_uri": furi}},
             {"text": prompt},
         ]}],
-        "generationConfig": {"temperature": 0.2, "maxOutputTokens": 65000},
+        # No sampling parameters: Gemini fixed them at their defaults from 3.6 Flash on
+        # and later models reject them (Google, 2026-10).
+        "generationConfig": {"maxOutputTokens": 65000},
     }
     status, _, body = http(
         f"{BASE}/v1beta/models/{MODEL}:generateContent?key={key}",

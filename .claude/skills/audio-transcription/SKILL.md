@@ -2,7 +2,7 @@
 name: audio-transcription
 description: >-
   Produce a high-quality transcript AND a cleaned-up written summary of an audio
-  recording using Google Gemini 2.5 Pro. Use this whenever the user wants to
+  recording using Google Gemini 3.1 Pro. Use this whenever the user wants to
   transcribe audio, get a transcript of a recording, or a writeup/summary/notes
   from a recording — interviews, podcasts, meetings, voice memos, lectures,
   phone calls — including when they just point at an audio file (.mp3, .wav,
@@ -19,7 +19,7 @@ Turn an audio recording into two deliverables:
 1. **A verbatim transcript** — speaker-labeled, with `[MM:SS]` timestamps.
 2. **A detailed cleaned-up writeup** — a structured, readable synthesis of the content.
 
-Transcription uses **Gemini 2.5 Pro** via the Gemini API (high quality, good speaker
+Transcription uses **Gemini 3.1 Pro** via the Gemini API (high quality, good speaker
 separation, handles technical vocabulary). The bundled script `scripts/transcribe.py`
 handles the upload + transcription deterministically so you don't re-derive the API
 flow each time.
