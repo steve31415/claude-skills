@@ -26,13 +26,20 @@ flow each time.
 
 ## Prerequisites
 
-- **Gemini API key** at `~/.config/gemini/key` — a single line, 39 chars, starting
-  with `AIza` (a Google AI Studio key). If it's missing, ask the user for one and save it:
+- **Gemini API key**: the `GEMINI_API_KEY` environment variable if set, else
+  `~/.config/gemini/key` — a single line, 39 chars, starting with `AIza` (a
+  Google AI Studio key). **Never ask the user to paste a key into the
+  conversation, and never print it**: anything in the chat is sent to the model
+  and kept in transcripts. If neither is present, ask the user to create the
+  file themselves from their own terminal, outside this session — for example
+  on macOS, with the key on the clipboard:
   ```bash
-  mkdir -p ~/.config/gemini && printf '%s' 'AIza...' > ~/.config/gemini/key && chmod 600 ~/.config/gemini/key
+  mkdir -p ~/.config/gemini && pbpaste > ~/.config/gemini/key && chmod 600 ~/.config/gemini/key
   ```
-  The script warns if the key looks malformed (wrong length/prefix). A common paste
-  error drops the leading `A` — if you see a 38-char key starting `Iza`, that's it.
+  If the environment keeps the key in a secret manager, pipe it into the file
+  without displaying it (e.g. `<secret-manager read command> > ~/.config/gemini/key`).
+  The script warns if the key looks malformed (wrong length/prefix) without
+  showing it; a common paste error drops the leading `A`.
 
 ## Workflow
 

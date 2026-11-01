@@ -4,7 +4,7 @@
 Usage:
     transcribe.py <audio-file> [--out <transcript.txt>] [--prompt <prompt.txt>]
 
-- Reads the API key from ~/.config/gemini/key (a single-line AI Studio key, "AIza...").
+- Reads the API key from $GEMINI_API_KEY or ~/.config/gemini/key (a single-line AI Studio key, "AIza...").
 - Uploads via the resumable Files API (required for files over the 20 MB inline limit;
   used unconditionally here so the same path works for any size).
 - Transcribes with gemini-3.1-pro-preview and prints the transcript to stdout.
@@ -55,16 +55,18 @@ def die(msg):
 
 
 def get_key():
-    try:
-        k = open(KEY_PATH).read().strip()
-    except FileNotFoundError:
-        die(f"No Gemini API key at {KEY_PATH}.\n"
-            "Create it with your Google AI Studio key:\n"
-            "  mkdir -p ~/.config/gemini && printf '%s' 'AIza...' > ~/.config/gemini/key && chmod 600 ~/.config/gemini/key")
+    k = os.environ.get("GEMINI_API_KEY", "").strip()
+    if not k:
+        try:
+            k = open(KEY_PATH).read().strip()
+        except FileNotFoundError:
+            die(f"No Gemini API key in $GEMINI_API_KEY or at {KEY_PATH}.\n"
+                "Create the file from your own terminal (never paste a key into a chat), e.g. on macOS:\n"
+                "  mkdir -p ~/.config/gemini && pbpaste > ~/.config/gemini/key && chmod 600 ~/.config/gemini/key")
     if not k:
         die(f"Key file {KEY_PATH} is empty.")
     if not k.startswith("AIza") or len(k) != 39:
-        print(f"WARNING: key looks malformed (len={len(k)}, prefix={k[:4]!r}). "
+        print(f"WARNING: key looks malformed (len={len(k)}, starts with 'AIza': {k.startswith('AIza')}). "
               "Valid AI Studio keys are 39 chars starting with 'AIza'.", file=sys.stderr)
     return k
 
